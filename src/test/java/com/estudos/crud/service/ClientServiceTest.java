@@ -13,6 +13,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.Mockito.*;
+
+
 @ExtendWith(MockitoExtension.class)
 class ClientServiceTest {
     @Mock
@@ -21,36 +24,73 @@ class ClientServiceTest {
     @InjectMocks
     private ClientService clientService;
 
-
-
     @Test
     public void shouldFindAllClient(){
         List<Client> mockListClient = List.of(mockClient());
-        Mockito.when(clientRepository.findAll()).thenReturn(mockListClient);
+        when(clientRepository.findAll()).thenReturn(mockListClient);
 
         var clients =  clientService.findAllClient();
 
         Assertions.assertNotNull(clients);
-        Assertions.assertEquals(1, mockListClient.get(0).getId());
-        Assertions.assertEquals(10000.00, mockListClient.get(0).getIncome());
-        Assertions.assertEquals("Rihanna", mockListClient.get(0).getName());
-        Assertions.assertEquals("000110011001", mockListClient.get(0).getCpf());
-        Assertions.assertEquals(2, mockListClient.get(0).getChildren());
+        Assertions.assertEquals(1, clients.get(0).getId());
+        Assertions.assertEquals(10000.00, clients.get(0).getIncome());
+        Assertions.assertEquals("Rihanna", clients.get(0).getName());
+        Assertions.assertEquals("000110011001", clients.get(0).getCpf());
+        Assertions.assertEquals(2, clients.get(0).getChildren());
 
     }
-
 
     @Test
     public void shouldFindClientById(){
 
-        Mockito.when(clientRepository.findById(1L)).thenReturn(Optional.of(mockClient()));
+        when(clientRepository.findById(1L)).thenReturn(Optional.of(mockClient()));
 
-       clientService.findClientById(1L);
+        var currentResult =  clientService.findClientById(1L);
 
-        Assertions.assertEquals(10000.00, mockClient().getIncome());
-        Assertions.assertEquals("Rihanna",mockClient().getName());
-        Assertions.assertEquals("000110011001", mockClient().getCpf());
-        Assertions.assertEquals(2, mockClient().getChildren());
+        Assertions.assertEquals(10000.00, currentResult.getIncome());
+        Assertions.assertEquals("Rihanna",currentResult.getName());
+        Assertions.assertEquals("000110011001", currentResult.getCpf());
+        Assertions.assertEquals(2, currentResult.getChildren());
+
+    }
+
+    @Test
+    public void shouldSaveClient(){
+        when(clientRepository.save(Mockito.any(Client.class))).thenReturn(mockClient());
+
+        var resultCurrent = clientService.insertClient(mockClient());
+
+        Assertions.assertEquals(1L, resultCurrent.getId());
+        Assertions.assertEquals(10000.00, resultCurrent.getIncome());
+        Assertions.assertEquals("Rihanna", resultCurrent.getName());
+        Assertions.assertEquals("000110011001", resultCurrent.getCpf());
+        Assertions.assertEquals(2, resultCurrent.getChildren());
+
+    }
+
+    @Test
+    public void shouldDeleteClient(){
+        doNothing().when(clientRepository).deleteById(1L);
+        clientService.deleteClient(1L);
+
+        verify(clientRepository).deleteById(1L);
+
+    }
+    @Test
+    public void shouldUpdateClient(){
+        Client clientUpdate = new Client();
+        clientUpdate.setId(1L);
+        clientUpdate.setIncome(10000.00);
+        clientUpdate.setName("Vanessa");
+        clientUpdate.setCpf("000110011001");
+        clientUpdate.setChildren(2);
+
+        when(clientRepository.findById(1L)).thenReturn(Optional.of(mockClient()));
+        when(clientRepository.save(Mockito.any(Client.class))).thenReturn(clientUpdate);
+
+        var resultCurrent = clientService.updateClient(1L, clientUpdate);
+        Assertions.assertEquals(1L, resultCurrent.getId());
+        Assertions.assertEquals("Vanessa", resultCurrent.getName());
 
     }
 
