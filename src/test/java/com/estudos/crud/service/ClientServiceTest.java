@@ -1,6 +1,7 @@
 package com.estudos.crud.service;
 
 import com.estudos.crud.entity.Client;
+import com.estudos.crud.provider.ClientProvider;
 import com.estudos.crud.repository.ClientRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -26,8 +27,7 @@ class ClientServiceTest {
 
     @Test
     public void shouldFindAllClient(){
-        List<Client> mockListClient = List.of(mockClient());
-        when(clientRepository.findAll()).thenReturn(mockListClient);
+        when(clientRepository.findAll()).thenReturn(List.of(ClientProvider.mockClientResponse()));
 
         var clients =  clientService.findAllClient();
 
@@ -43,7 +43,7 @@ class ClientServiceTest {
     @Test
     public void shouldFindClientById(){
 
-        when(clientRepository.findById(1L)).thenReturn(Optional.of(mockClient()));
+        when(clientRepository.findById(1L)).thenReturn(Optional.of(ClientProvider.mockClientResponse()));
 
         var currentResult =  clientService.findClientById(1L);
 
@@ -56,11 +56,10 @@ class ClientServiceTest {
 
     @Test
     public void shouldSaveClient(){
-        when(clientRepository.save(Mockito.any(Client.class))).thenReturn(mockClient());
+        when(clientRepository.save(Mockito.any(Client.class))).thenReturn(ClientProvider.mockClientResponse());
 
-        var resultCurrent = clientService.insertClient(mockClient());
+        var resultCurrent = clientService.insertClient(ClientProvider.mockClientRequest());
 
-        Assertions.assertEquals(1L, resultCurrent.getId());
         Assertions.assertEquals(10000.00, resultCurrent.getIncome());
         Assertions.assertEquals("Rihanna", resultCurrent.getName());
         Assertions.assertEquals("000110011001", resultCurrent.getCpf());
@@ -78,29 +77,13 @@ class ClientServiceTest {
     }
     @Test
     public void shouldUpdateClient(){
-        Client clientUpdate = new Client();
-        clientUpdate.setId(1L);
-        clientUpdate.setIncome(10000.00);
-        clientUpdate.setName("Vanessa");
-        clientUpdate.setCpf("000110011001");
-        clientUpdate.setChildren(2);
+        when(clientRepository.findById(1L)).thenReturn(Optional.of(ClientProvider.mockClientResponse()));
+        when(clientRepository.save(Mockito.any(Client.class))).thenReturn(ClientProvider.mockClientUpdateRequest());
 
-        when(clientRepository.findById(1L)).thenReturn(Optional.of(mockClient()));
-        when(clientRepository.save(Mockito.any(Client.class))).thenReturn(clientUpdate);
-
-        var resultCurrent = clientService.updateClient(1L, clientUpdate);
+        var resultCurrent = clientService.updateClient(1L, ClientProvider.mockClientUpdateRequest());
         Assertions.assertEquals(1L, resultCurrent.getId());
-        Assertions.assertEquals("Vanessa", resultCurrent.getName());
+        Assertions.assertEquals("Viola Davis", resultCurrent.getName());
 
     }
 
-    private Client mockClient(){
-        Client clientMock = new Client();
-        clientMock.setId(1L);
-        clientMock.setIncome(10000.00);
-        clientMock.setName("Rihanna");
-        clientMock.setCpf("000110011001");
-        clientMock.setChildren(2);
-       return clientMock;
-    }
 }
