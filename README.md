@@ -1,16 +1,13 @@
 #  client-project
 
-Web Service REST simples, implementado com o fim de aprofundamento de conhecimento, que permite a criação, inserção, atualização e remoção de clientes
+Simple REST Web Service, implemented for the purpose of deepening knowledge, allowing the creation, insertion, update, and removal of clients.
 
-
-###  Competências adquiridos com projeto:
+### Skills acquired through the project:
 - Repository Pattern
- - Testes unitários e Testes de integração  
- - Database seeding
- - Exception Handling
- - GitHub Actions - Configuração de Pipeline
- - Padrão de commit semântico 
-
-###  Tecnologias Utilizadas
- - JDK 17, Maven, h2 database , Mockito, MockMVC
-
+- Unit Tests and Integration Tests
+- Database Seeding
+- Exception Handling
+- GitHub Actions - Pipeline Configuration
+- Semantic Commit Pattern
+### Used Technologies:
+JDK 17, Maven, H2 Database, Mockito, MockMVC
